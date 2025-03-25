@@ -1,4 +1,4 @@
-import { fromEventPattern, share, pipe, filter, map } from "rxjs";
+import { fromEventPattern, share, tap, filter, map } from "rxjs";
 import { Socket } from 'socket.io-client';
 import { Mission_Payload } from "./type";
 import * as rclnodejs from 'rclnodejs';
@@ -6,7 +6,7 @@ import { MissionActionClient } from "../../ros";
 
 export const dispatchMission = (socket: Socket, node: rclnodejs.Node) => {
     const missionAcitonClient = new MissionActionClient(node);
-    const lastSendGoadID: string = '';
+    let lastSendGoadID: string = '';
 
     return fromEventPattern<{ status: string }>((next) => {
         socket.on('write-status', next);
@@ -15,8 +15,12 @@ export const dispatchMission = (socket: Socket, node: rclnodejs.Node) => {
 
             return JSON.parse(status) as Mission_Payload;
         }),
-        filter((mission) => lastSendGoadID !== mission.Id))
+        filter((mission) => lastSendGoadID !== mission.Id),
+        tap((mission) => {
+            lastSendGoadID = mission.Id
+        }))
         .subscribe((data) => {
-            console.log(data)
+
+            // console.log(data)
         })
 }
