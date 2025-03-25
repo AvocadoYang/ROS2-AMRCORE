@@ -1,2 +1,2 @@
-# Placeholder file
-<your project details here>
+# ROS2-AMRCORE
+

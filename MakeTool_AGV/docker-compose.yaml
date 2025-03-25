@@ -1,0 +1,61 @@
+version: "3.9"
+services:
+  db:
+    image: redis:latest
+    container_name: db
+    ports:
+      - "6379:6379"
+
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: kenmec123
+
+
+
+      
+  mission-control:
+    container_name: mc
+    environment:
+      DATABASE_URL: mysql://root:kenmec123@mysql:3306/kenmec_System_Dev_Dep
+      REDIS_URI: redis://db:6379
+      NODE_CONFIG_ENV: px_ruifang
+      FPS: 60
+      TIME_SCALE: 4
+      CAR_SPEED: 1.5
+      JWT_SECRET: kenmec
+      JWT_DAYS: 7d
+    build:
+      context: .
+      dockerfile: ./mission-control/Dockerfile
+    
+    ports:
+      - '4000:4000'
+      - '8080:22'
+    depends_on:
+      - mysql
+      - db
+
+
+  agvs-dashboard:
+    container_name: vite-dashboard
+    build:
+      context: .
+      dockerfile: ./vite-dashboard/Dockerfile
+    ports:
+      - '3000:3000'
+
+
+  # charge-station-core:
+  #   container_name: charge-station-core
+  #   restart: always
+  #   ports:
+  #     - "8899:8899"
+  #   build:
+  #     context: .
+  #     dockerfile: ./charge-station-core/Dockerfile
