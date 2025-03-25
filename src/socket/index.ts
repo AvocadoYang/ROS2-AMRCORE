@@ -1,7 +1,7 @@
 import configs from '../configs'
 import * as rclnodejs from 'rclnodejs';
 import { io, Socket } from 'socket.io-client';
-import { dispatchMission } from './dispachMission/dispatchMission';
+import MissionControl from './MissionControl/MissionControl';
 
 let socket: Socket
 const init = (node: rclnodejs.Node) => {
@@ -10,9 +10,7 @@ const init = (node: rclnodejs.Node) => {
         query: { serialNumber: configs.MAC_ADDRESS }, secure: true,
         rejectUnauthorized: false,
     });
-
-
-    const dispatchMission$ = dispatchMission(socket, node);
+    const missionControl = new MissionControl(socket, node)
 }
 
 
