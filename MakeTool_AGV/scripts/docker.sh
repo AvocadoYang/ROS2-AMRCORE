@@ -15,18 +15,19 @@ if command -v docker &> /dev/null; then
   echo -e "${GREEN}Docker is already installed${NC}"
 else
   # Install Docker
-  echo -e "${GREEN}Installing Docker...${NC}"
+  echo -e "${GREEN}Installing Docker...${NC}"\
   sudo apt update && \
   sudo apt install apt-transport-https ca-certificates curl software-properties-common && \
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable" && \
   apt-cache policy docker-ce && \
-  sleep 2
+  sleep 2 \
   sudo apt install docker-ce && \
   sudo usermod -aG docker ${USER}
   su - ${USER}
-  sudo usermod -aG docker username
 fi
+
+sudo chmod 777 /var/run/docker.sock
 #sudo sh -c "$(curl -fsSL https://get.docker.com)" || { echo -e "${RED}Failed to install Docker${NC}"; exit 1; }
 
 # Check if Docker is already installed

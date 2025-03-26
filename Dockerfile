@@ -1,4 +1,7 @@
-FROM osrf/ros:humble-desktop
+ARG  ROS_DISTRO=humble
+
+# FROM osrf/ros:humble-desktop
+FROM arm64v8/ros:humble-ros-base
 
 RUN apt-get update && \
     apt-get install -y \
@@ -11,6 +14,14 @@ RUN apt-get update && \
     net-tools \
     iputils-ping && \
     rm -rf /var/lib/apt/lists/*
+
+RUN apt-get install -y \
+    build-essential \
+    git \
+    python3-colcon-common-extensions \
+    python3-colcon-mixin \
+    python3-rosdep \
+    python3-vcstool 
 
 RUN mkdir -p /AGV/ros2_ws/src/humanoid_pkg
 
@@ -29,7 +40,7 @@ RUN echo 'export NVM_DIR="$HOME/.nvm"' >> /root/.bashrc && \
     echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /root/.bashrc && \
     echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> /root/.bashrc
 
-#need to use nvm intall node 20
+
 
 RUN echo "root:kenmec" | chpasswd
 
