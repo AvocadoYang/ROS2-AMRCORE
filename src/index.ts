@@ -3,9 +3,6 @@ import socket_init from './socket'
 import chalk from 'chalk';
 import { TestTopic } from './ros';
 
-// Create a node that publishes a msg to the topic 'foo' every 1 second.
-// View the topic from the ros2 commandline as shown below:
-//     ros2 topic echo foo std_msgs/msg/String
 async function example() {
 
   await rclnodejs.init().catch((error) => {
