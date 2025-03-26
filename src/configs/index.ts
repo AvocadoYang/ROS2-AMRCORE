@@ -2,7 +2,6 @@ import config from 'config';
 import chalk from 'chalk';
 import { number, object, string } from 'yup';
 import { format } from 'util';
-console.log(config)
 
 console.log(
     chalk.blue(
@@ -10,8 +9,6 @@ console.log(
         format(config.util.getConfigSources().map((c) => c.name)),
     )
 );
-
-
 
 const schema = object({
     MISSION_CONTROL_HOST: string().required(),

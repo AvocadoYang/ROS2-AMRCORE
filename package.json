@@ -1,5 +1,5 @@
 {
-  "name": "humanoid_amr_core_pkg",
+  "name": "humanoid_pkg",
   "version": "0.0.0",
   "description": "TODO: Package description",
   "keywords": [],
@@ -7,7 +7,7 @@
   "license": "TODO: License declaration",
   "scripts": {
     "build": "tsc",
-    "generate-messages": "node_modules/.bin/generate-ros-messages",
+    "messages": "node_modules/.bin/generate-ros-messages",
     "debug": "ts-node-dev --watch .env,config --respawn  ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

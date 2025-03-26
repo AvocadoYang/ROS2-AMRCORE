@@ -1,13 +1,13 @@
 import * as rclnodejs from 'rclnodejs';
 import { FeedBackType } from './type';
 
-const StatusMsg = rclnodejs.require('humanoid_amr_core_pkg/msg/Status');
+const StatusMsg = rclnodejs.require('humanoid_pkg/msg/Status');
 class TestTopic {
     private _publisher;
     private _node: rclnodejs.Node;
     constructor(node: rclnodejs.Node) {
         this._node = node
-        this._publisher = node.createPublisher('humanoid_amr_core_pkg/msg/Status', 'robot_status');
+        this._publisher = node.createPublisher('humanoid_pkg/msg/Status', 'robot_status');
     }
     public intervalTopic() {
         setInterval(() => {

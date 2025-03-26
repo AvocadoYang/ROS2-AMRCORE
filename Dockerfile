@@ -12,10 +12,10 @@ RUN apt-get update && \
     iputils-ping && \
     rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /AGV/ros2_ws/src/humanoid_amr_core_pkg
+RUN mkdir -p /AGV/ros2_ws/src/humanoid_pkg
 
 COPY ./setup.sh /
-COPY . /AGV/ros2_ws/src/humanoid_amr_core_pkg
+COPY . /AGV/ros2_ws/src/humanoid_pkg
 
 RUN echo "source /opt/ros/humble/setup.bash" > /root/.bashrc
 

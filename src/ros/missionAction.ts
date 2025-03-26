@@ -2,7 +2,7 @@ import * as rclnodejs from 'rclnodejs';
 import { FeedBackType } from './type';
 import { Mission_Payload } from '../socket/MissionControl/type';
 
-const MissionAction = rclnodejs.require('humanoid_amr_core_pkg/action/Mission');
+const MissionAction = rclnodejs.require('humanoid_pkg/action/Mission');
 class MissionActionClient {
     private _actionClient: rclnodejs.ActionClient<any>;
     private _node: rclnodejs.Node;
@@ -11,7 +11,7 @@ class MissionActionClient {
         this._node = node
         this._actionClient = new rclnodejs.ActionClient(
             node,
-            'humanoid_amr_core_pkg/action/Mission',
+            'humanoid_pkg/action/Mission',
             "/fleet_manager/mission"
         )
     }
