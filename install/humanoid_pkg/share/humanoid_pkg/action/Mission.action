@@ -1,0 +1,9 @@
+# Define the goal
+string request_json
+---
+# Define the result
+int16 result_status
+string result_message
+---
+# Define a feedback message
+string feedback_json

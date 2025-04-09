@@ -1,0 +1,26 @@
+// generated from rosidl_adapter/resource/action.idl.em
+// with input from humanoid_pkg/action/Mission.action
+// generated code does not contain a copyright notice
+
+
+module humanoid_pkg {
+  module action {
+    @verbatim (language="comment", text=
+      "Define the goal")
+    struct Mission_Goal {
+      string request_json;
+    };
+    @verbatim (language="comment", text=
+      "Define the result")
+    struct Mission_Result {
+      int16 result_status;
+
+      string result_message;
+    };
+    @verbatim (language="comment", text=
+      "Define a feedback message")
+    struct Mission_Feedback {
+      string feedback_json;
+    };
+  };
+};

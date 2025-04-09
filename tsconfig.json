@@ -17,6 +17,7 @@
   },
   "exclude": [
     "**/dist/**",
-    "**/test/**"
+    "**/test/**",
+    "action-client-example.ts",
   ]
 }

@@ -1,0 +1,14 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from humanoid_pkg/msg/Status.msg
+// generated code does not contain a copyright notice
+
+
+module humanoid_pkg {
+  module msg {
+    struct Status {
+      string robot_name;
+
+      int32 battery_level;
+    };
+  };
+};

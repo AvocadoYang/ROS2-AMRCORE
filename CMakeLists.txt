@@ -12,8 +12,12 @@ find_package(rosidl_default_generators REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
+message(${PROJECT_NAME})
+
+
 rosidl_generate_interfaces(${PROJECT_NAME}
   "action/Mission.action"
+  "action/Fibonacci.action"
   "msg/Status.msg"
   DEPENDENCIES builtin_interfaces
 )

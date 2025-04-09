@@ -17,7 +17,7 @@ class MissionActionClient {
     }
     public async sendMission(mission: Mission_Payload) {
         this._node.getLogger().info('Waiting for action server...');
-        await this._actionClient.waitForServer();
+       await this._actionClient.waitForServer();
 
         const goal = new MissionAction.Goal()
         goal.request_json = JSON.stringify(mission);
@@ -25,8 +25,8 @@ class MissionActionClient {
         this._node.getLogger().info('Sending goal request...');
 
         this.goalHandle = await this._actionClient.sendGoal(goal, (feedback) =>
-            this.feedbackCallback(feedback)
-        );
+            this.feedbackCallback(JSON.parse(feedback))
+        )
 
         if (!this.goalHandle.isAccepted()) {
             this._node.getLogger().info('Goal rejected');
@@ -39,7 +39,7 @@ class MissionActionClient {
         if (this.goalHandle.isSucceeded()) {
             this._node
                 .getLogger()
-                .info(`Goal suceeded with result: ${result.sequence}`);
+                .info(`Goal suceeded with result: ${result}`);
         } else {
             this._node.getLogger().info(`Goal failed`);
         }

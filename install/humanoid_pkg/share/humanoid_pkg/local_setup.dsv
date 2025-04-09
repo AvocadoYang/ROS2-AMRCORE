@@ -1,0 +1,4 @@
+source;share/humanoid_pkg/environment/ament_prefix_path.sh
+source;share/humanoid_pkg/environment/library_path.sh
+source;share/humanoid_pkg/environment/path.sh
+source;share/humanoid_pkg/environment/pythonpath.sh
