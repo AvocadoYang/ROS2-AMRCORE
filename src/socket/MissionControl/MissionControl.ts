@@ -1,33 +1,56 @@
 import { Socket } from 'socket.io-client';
-import { Subscription } from "rxjs"; 
+import { filter, map, Subscription, tap } from "rxjs";
 import * as rclnodejs from 'rclnodejs';
-import { MissionActionClient } from "../../ros";
-import { SendMission } from './action';
+import { missionBehavior } from "../../ros";
+import { sendMission$, cancelMissionMission$ } from './action';
+import { Mission_Payload } from './type';
 
 class MissionControl {
     private lastSendGoalID: string;
-    private missionCancelFlag: boolean;
-    private missionAcitonClient: MissionActionClient;
+    private missionAcitonClient: missionBehavior;
     private socket: Socket;
-  //  private sendMission$: Subscription | null;
+    private RxSubscription: Subscription[] = [];
+
     constructor(socket: Socket, node: rclnodejs.Node) {
         this.lastSendGoalID = '';
         this.socket = socket;
-        this.missionCancelFlag = false;
-        this.missionAcitonClient = new MissionActionClient(node);
- //	this.sendMission$ = this.sendMission();
+        this.missionAcitonClient = new missionBehavior(node, socket);
     }
 
-    public sendMission() {
-       return SendMission(this.socket, this.lastSendGoalID).subscribe((mission) => {
-            this.missionAcitonClient.sendMission(mission)
-        });
+    private sendMission() {
+        return sendMission$(this.socket).pipe(
+            map(({ status }) => {
+                return JSON.parse(status) as Mission_Payload;
+            }),
+            filter((mission) => this.lastSendGoalID !== mission.Id),
+            tap((mission) => {
+                this.lastSendGoalID = mission.Id
+            })).subscribe((mission) => {
+                this.missionAcitonClient.sendMission(mission)
+            });
     }
 
-    public cancelMission() {
-        if (!this.lastSendGoalID) return;
+    private cancelMission() {
+        return cancelMissionMission$(this.socket)
+            .subscribe(({ id: goalId }) => {
+                if (this.lastSendGoalID !== goalId) return;
+                this.missionAcitonClient.cancelMission(goalId)
+            })
     }
 
+    public subscribe() {
+        this.RxSubscription.push(this.sendMission());
+        this.RxSubscription.push(this.cancelMission())
+    }
+
+    public unsubscribe() {
+        if (!this.RxSubscription.length) return;
+        this.RxSubscription.forEach((sub) => {
+            if (!sub.closed) {
+                sub.unsubscribe()
+            }
+        })
+    }
 
 }
 

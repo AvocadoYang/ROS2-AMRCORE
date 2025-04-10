@@ -14,6 +14,7 @@ const schema = object({
     MISSION_CONTROL_HOST: string().required(),
     MISSION_CONTROL_PORT: number().integer().min(0).max(65535).required(),
     MAC_ADDRESS: string().required(),
+    AMR_TYPE: string().required(),
     LOG_LEVEL: string()
         .oneOf(['error', 'warn', 'info', 'http', 'verbose', 'debug', 'silly'])
         .required(),

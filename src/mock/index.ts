@@ -1,5 +1,4 @@
-
-
+import { Mission_Payload } from "../socket/MissionControl/type";
 
 
 export const fakeIoInfo = {
@@ -52,3 +51,19 @@ export const fakeIoInfo = {
   bumper: true,
   recovery: false,
 };
+
+
+export const msg: Mission_Payload = {
+  Id: 'testId',
+  Action: 'addTaskSlice',
+  Time: '123',
+  Device: 'amr01',
+  Body: {
+    operation: {
+      id: 1,
+      type: ['move'],
+      control: ['shak'],
+      param: ['123']
+    }
+  }
+}
