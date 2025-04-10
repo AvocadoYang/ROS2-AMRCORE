@@ -1,4 +1,6 @@
-import configs from '../configs'
+import configs from '../configs';
+import {interval} from "rxjs";
+import { fakeIoInfo } from '../mock'
 import * as rclnodejs from 'rclnodejs';
 import { io, Socket } from 'socket.io-client';
 import MissionControl from './MissionControl/MissionControl';
@@ -11,6 +13,12 @@ const init = (node: rclnodejs.Node) => {
         rejectUnauthorized: false,
     });
     const missionControl = new MissionControl(socket, node)
+    socket.on("connect", () => {
+       missionControl.sendMission();
+       interval(100).subscribe(() => {
+          socket.emit('io-info', { msg: { ...fakeIoInfo } })
+    });
+    })
 }
 
 
