@@ -1,4 +1,4 @@
-import { Mission_Payload } from "../socket/MissionControl/type";
+import { Mission_Payload } from "../socket/Controller/MissionControl/type";
 
 
 export const fakeIoInfo = {

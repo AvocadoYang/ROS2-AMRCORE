@@ -1,7 +1,7 @@
 import * as rclnodejs from 'rclnodejs';
 import { FeedBackType } from './type';
 import configs from '../configs';
-import { Mission_Payload } from '../socket/MissionControl/type';
+import { Mission_Payload } from '../socket/Controller/MissionControl/type';
 import { Socket } from 'socket.io-client';
 
 

@@ -1,6 +1,6 @@
 import * as rclnodejs from 'rclnodejs';
 import { FeedBackType } from './type';
-import { Mission_Payload } from '../socket/MissionControl/type';
+import { Mission_Payload } from '../socket/Controller/MissionControl/type';
 import { Socket } from 'socket.io-client';
 
 const MissionAction = rclnodejs.require('humanoid_pkg/action/Mission');
@@ -21,6 +21,7 @@ class missionBehavior {
 
     public async sendMission(mission: Mission_Payload) {
         this._node.getLogger().info('Waiting for action server...');
+
         await this._actionClient.waitForServer(5000);
 
         const goal = new MissionAction.Goal()

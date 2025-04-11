@@ -1,12 +1,16 @@
 import configs from '../configs';
 import * as rclnodejs from 'rclnodejs';
 import { io, Socket } from 'socket.io-client';
-import MissionControl from './MissionControl/MissionControl';
+import { MissionControl, TrafficControl } from './Controller';
+import { TEST } from '../actions/missionOutput';
+import { interval } from 'rxjs';
 
 
 class SocketConnect {
     private socket: Socket;
-    private missionControl: MissionControl | null = null;
+    private MC: MissionControl;
+    private TC: TrafficControl;
+
 
     constructor(node: rclnodejs.Node) {
         const url = `wss://${configs.MISSION_CONTROL_HOST}:${configs.MISSION_CONTROL_PORT}/amr`;
@@ -14,17 +18,28 @@ class SocketConnect {
             query: { serialNumber: configs.MAC_ADDRESS }, secure: true,
             rejectUnauthorized: false,
         });
+        this.MC = new MissionControl(this.socket, node);
 
+        this.TC = new TrafficControl(this.socket, node);
         this.socket.on("connect", () => {
-            this.missionControl = new MissionControl(this.socket, node);
-            this.missionControl.subscribe()
         })
 
         this.socket.on("disconnect", () => {
-            if (this.missionControl) {
-                this.missionControl.unsubscribe()
-                this.missionControl = null;
+            // if (this.missionControl) {
+            //     this.missionControl.deactivate()
+            //     this.missionControl = null;
+            // }
+        })
+
+        this.MC.subsribe((action) => {
+            switch (action.type) {
+                case TEST:
+                    this.TC.next(action)
+                    break;
+                default:
+                    break;
             }
+
         })
     }
 }

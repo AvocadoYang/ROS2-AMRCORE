@@ -1,20 +1,26 @@
 import { Socket } from 'socket.io-client';
-import { filter, map, Subscription, tap } from "rxjs";
+import { filter, map, Subject, Subscription, tap } from "rxjs";
 import * as rclnodejs from 'rclnodejs';
-import { missionBehavior } from "../../ros";
+import { missionBehavior } from "../../../ros";
 import { sendMission$, cancelMissionMission$ } from './action';
+import { Output, sendTest } from '../../../actions/missionOutput';
 import { Mission_Payload } from './type';
 
 class MissionControl {
+    private output$: Subject<Output>;
     private lastSendGoalID: string;
     private missionAcitonClient: missionBehavior;
     private socket: Socket;
     private RxSubscription: Subscription[] = [];
 
     constructor(socket: Socket, node: rclnodejs.Node) {
+
+        this.output$ = new Subject();
         this.lastSendGoalID = '';
         this.socket = socket;
         this.missionAcitonClient = new missionBehavior(node, socket);
+
+        this.activate()
     }
 
     private sendMission() {
@@ -25,25 +31,34 @@ class MissionControl {
             filter((mission) => this.lastSendGoalID !== mission.Id),
             tap((mission) => {
                 this.lastSendGoalID = mission.Id
-            })).subscribe((mission) => {
-                this.missionAcitonClient.sendMission(mission)
+            })).subscribe(async (mission) => {
+                await this.missionAcitonClient.sendMission(mission)
             });
     }
 
     private cancelMission() {
         return cancelMissionMission$(this.socket)
-            .subscribe(({ id: goalId }) => {
+            .subscribe(async ({ id: goalId }) => {
                 if (this.lastSendGoalID !== goalId) return;
-                this.missionAcitonClient.cancelMission(goalId)
+                await this.missionAcitonClient.cancelMission(goalId)
             })
     }
 
-    public subscribe() {
+    public test() {
+        this.output$.next(sendTest({ test: 'hello world' }))
+    }
+
+    public subsribe(cb: (action: Output) => void) {
+        return this.output$.subscribe(cb)
+    }
+
+
+    public activate() {
         this.RxSubscription.push(this.sendMission());
         this.RxSubscription.push(this.cancelMission())
     }
 
-    public unsubscribe() {
+    public deactivate() {
         if (!this.RxSubscription.length) return;
         this.RxSubscription.forEach((sub) => {
             if (!sub.closed) {
@@ -51,6 +66,7 @@ class MissionControl {
             }
         })
     }
+
 
 }
 
