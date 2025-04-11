@@ -1,0 +1,4 @@
+string location_id
+bool is_allow
+---
+bool result

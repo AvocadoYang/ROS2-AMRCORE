@@ -44,9 +44,6 @@ class MissionControl {
             })
     }
 
-    public test() {
-        this.output$.next(sendTest({ test: 'hello world' }))
-    }
 
     public subsribe(cb: (action: Output) => void) {
         return this.output$.subscribe(cb)

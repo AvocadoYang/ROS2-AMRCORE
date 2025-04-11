@@ -21,6 +21,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "action/Fibonacci.action"
   "msg/Status.msg"
   "srv/ShortestPath.srv"
+  "srv/TrafficStatus.srv"
   DEPENDENCIES builtin_interfaces std_msgs
 )
 

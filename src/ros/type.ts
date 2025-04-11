@@ -8,3 +8,9 @@ export type IsArrive = {
         isArrive: boolean;
     }
 };
+
+export type isAway = {
+    data: {
+        locationId: string
+    }
+}
