@@ -9,9 +9,9 @@ import { Mission_Payload } from './type';
 class MissionControl {
     private output$: Subject<Output>;
     private lastSendGoalID: string;
-    private missionAcitonClient: missionBehavior;
     private socket: Socket;
     private RxSubscription: Subscription[] = [];
+    private missionAcitonClient: missionBehavior;
 
     constructor(socket: Socket, node: rclnodejs.Node) {
 

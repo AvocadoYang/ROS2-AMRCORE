@@ -8,6 +8,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+find_package(std_msgs REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -20,7 +21,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "action/Fibonacci.action"
   "msg/Status.msg"
   "srv/ShortestPath.srv"
-  DEPENDENCIES builtin_interfaces
+  DEPENDENCIES builtin_interfaces std_msgs
 )
 
 if(BUILD_TESTING)
@@ -35,6 +36,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 ament_export_dependencies(rosidl_default_runtime)
+ament_export_dependencies(rosidl_default_runtime std_msgs)
 ament_package()
 
 # install rules added by ros2pkg_configure_nodejs
