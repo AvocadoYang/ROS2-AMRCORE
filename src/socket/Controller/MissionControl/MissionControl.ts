@@ -1,9 +1,9 @@
 import { Socket } from 'socket.io-client';
 import { filter, map, Subject, Subscription, tap } from "rxjs";
 import * as rclnodejs from 'rclnodejs';
-import { missionBehavior } from "../../../ros";
+import { MissionBehavior } from "../../../ros";
 import { sendMission$, cancelMissionMission$ } from './action';
-import { Output, sendTest } from '../../../actions/missionOutput';
+import { Output, sendTest, sendCancelMission } from '../../../actions/missionOutput';
 import { Mission_Payload } from './type';
 
 class MissionControl {
@@ -11,14 +11,14 @@ class MissionControl {
     private lastSendGoalID: string;
     private socket: Socket;
     private RxSubscription: Subscription[] = [];
-    private missionAcitonClient: missionBehavior;
+    private missionAcitonClient: MissionBehavior;
 
     constructor(socket: Socket, node: rclnodejs.Node) {
 
         this.output$ = new Subject();
         this.lastSendGoalID = '';
         this.socket = socket;
-        this.missionAcitonClient = new missionBehavior(node, socket);
+        this.missionAcitonClient = new MissionBehavior(node, socket);
 
         this.activate()
     }
@@ -40,10 +40,14 @@ class MissionControl {
         return cancelMissionMission$(this.socket)
             .subscribe(async ({ id: goalId }) => {
                 if (this.lastSendGoalID !== goalId) return;
+                this.output$.next(sendCancelMission({ goadId: goalId }))
                 await this.missionAcitonClient.cancelMission(goalId)
             })
     }
 
+    public test() {
+        this.output$.next(sendTest({ test: 'hello world' }))
+    }
 
     public subsribe(cb: (action: Output) => void) {
         return this.output$.subscribe(cb)

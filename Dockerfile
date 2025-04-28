@@ -56,6 +56,8 @@ RUN service ssh start
 
 EXPOSE 22
 
+ENTRYPOINT ["/setup.sh"]
+
 #need to run service ssh start
 #run npx rclnodejs genreate-typings to setting type of ROS
 CMD ["bash"]

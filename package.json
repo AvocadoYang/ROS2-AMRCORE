@@ -6,7 +6,7 @@
   "author": "",
   "license": "TODO: License declaration",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && tsc && cp server.crt dist/mock/server.crt && cp server.key dist/mock/server.key",
     "messages": "node_modules/.bin/generate-ros-messages",
     "debug": "ts-node-dev --watch .env,config --respawn  ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,6 +22,7 @@
     "messages": "^0.1.0",
     "rclnodejs": "^0.32.4",
     "rxjs": "^7.8.2",
+    "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "ts-node-dev": "^2.0.0",
     "typesafe-actions": "^5.1.0",

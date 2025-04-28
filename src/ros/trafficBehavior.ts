@@ -1,7 +1,6 @@
 import * as rclnodejs from 'rclnodejs';
-import { FeedBackType, IsArrive, isAway } from './type';
+import { IsArrive, isAway } from './type';
 import configs from '../configs';
-import { Mission_Payload } from '../socket/Controller/MissionControl/type';
 import { Socket } from 'socket.io-client';
 import { fromEventPattern, map, Observable } from 'rxjs';
 import { sendShortestIsReceived } from '../socket/Controller/TrafficControl/action';
@@ -28,7 +27,7 @@ class TrafficBehavior {
         )
 
         this.isArriveTopic$ = fromEventPattern<IsArrive>((next) => {
-            node
+            this._node
                 .createSubscription(
                     'std_msgs/msg/String',
                     `/kenmec_${configs.AMR_TYPE}/navigation/is_arrive`,
@@ -37,7 +36,7 @@ class TrafficBehavior {
         })
 
         this.leaveLoactionTopic$ = fromEventPattern<isAway>((next) => {
-            node.createSubscription(
+            this._node.createSubscription(
                 'std_msgs/msg/String',
                 `/kenmec_${configs.AMR_TYPE}/navigation/is_away`,
                 next

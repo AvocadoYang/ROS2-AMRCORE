@@ -7,9 +7,16 @@ export const sendTest = (data: { test: string }) => ({
     ...data
 })
 
+export const CANCEL_MISSION = `${PREFIX}/CANCEL_MISSION` as const;
+export const sendCancelMission = (data: { goadId: string }) => ({
+    type: CANCEL_MISSION,
+    ...data
+})
+
 
 type AllOutput = ReturnType<
     | typeof sendTest
+    | typeof sendCancelMission
 >;
 
 export type Output<

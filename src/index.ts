@@ -1,12 +1,11 @@
 import * as rclnodejs from 'rclnodejs';
 import SocketConnect from './socket'
 import chalk from 'chalk';
-import configs from './configs'
+import { register } from './mock/mockTraffic';
 import { TestTopic } from './ros';
 
 
 async function getNode() {
-
   await rclnodejs.init().catch((error) => {
     console.log(chalk.red(error));
   });
@@ -16,9 +15,12 @@ async function getNode() {
 }
 
 (async function main(): Promise<void> {
+
+  register();
   const node = await getNode();
 
-  new SocketConnect(node)
+  new SocketConnect(node);
+
 
   process.on('SIGINT', () => {
     console.log('Stopping...');

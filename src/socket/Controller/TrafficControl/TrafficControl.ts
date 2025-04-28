@@ -2,12 +2,11 @@ import { Socket } from "socket.io-client";
 import * as rclnodejs from 'rclnodejs';
 import { allowPath$, isLocationIdAndIsAllow, sendIsArriveLocation, sendIsLeaveLocation, sendReachGoal, shortestPath$, startOneTermAllowPath$ } from "./action";
 import { filter, Subject, Subscription, switchMap, take, tap } from "rxjs";
-import { Output as MCOutput, TEST } from "../../../actions/missionOutput";
+import { Output as MCOutput, TEST, CANCEL_MISSION } from "../../../actions/missionOutput";
 import { ofType } from "../../../helpers/operators";
-import TrafficBehavior from "../../../ros/trafficBehavior";
-import { IsArrive } from "../../../ros/type";
+import { TrafficBehavior } from "../../../ros";
 
-type Input = MCOutput<typeof TEST>;
+type Input = MCOutput<typeof TEST | typeof CANCEL_MISSION>;
 
 class TrafficControl {
     private input$: Subject<Input>;
@@ -20,6 +19,7 @@ class TrafficControl {
     constructor(private socket: Socket, private node: rclnodejs.Node) {
         this.input$ = new Subject();
         this.trafficService = new TrafficBehavior(this.node, this.socket);
+        this.activate()
     }
 
     /** 
@@ -27,18 +27,20 @@ class TrafficControl {
     */
     private getOneTermAllowPath() {
         return startOneTermAllowPath$(this.socket).
-            pipe(switchMap(() => {
-                this.node.getLogger().info("Start wait arriving");
-                return this.trafficService.getArriveTarget().pipe(take(1))
-            })).subscribe(({ data }) => {
-                this.node.getLogger().info(`Arrive location ${data.locationId} is recevied successful`);
-                if (data.isArrive) {
-                    sendIsArriveLocation(data, this.socket)
-                    sendReachGoal(data.locationId, this.socket)
-                    this.targetLoc = ''
-                    this.lastShortestPath = []
-                }
-            })
+            pipe(
+                tap((data) => { console.log(data) }),
+                switchMap(() => {
+                    this.node.getLogger().info("Start wait arriving");
+                    return this.trafficService.getArriveTarget().pipe(take(1))
+                })).subscribe(({ data }) => {
+                    this.node.getLogger().info(`Arrive location ${data.locationId} is recevied successful`);
+                    if (data.isArrive) {
+                        sendIsArriveLocation(data, this.socket)
+                        sendReachGoal(data.locationId, this.socket)
+                        this.targetLoc = ''
+                        this.lastShortestPath = []
+                    }
+                })
     }
 
     /** 
@@ -84,12 +86,29 @@ class TrafficControl {
                             })
                     }
                 }
+                this.trafficService.sendIsAllow(
+                    {
+                        locationId: allowTarget.locationId,
+                        isAllow: allowTarget.isAllow
+                    }
+                )
             })
     }
 
     private inputEvent() {
-        this.input$.subscribe((action) => {
-
+        return this.input$.subscribe((action) => {
+            switch (action.type) {
+                case CANCEL_MISSION:
+                    if (!this.getArriveLoc$?.closed) {
+                        this.getArriveLoc$?.unsubscribe();
+                    }
+                    if (this.getLeaveLoc$?.closed) {
+                        this.getLeaveLoc$.unsubscribe()
+                    }
+                    break;
+                default:
+                    break;
+            }
         })
     }
 
@@ -101,6 +120,7 @@ class TrafficControl {
         this.subscriptions$.push(this.getOneTermAllowPath());
         this.subscriptions$.push(this.getShortestPath());
         this.subscriptions$.push(this.getIsAllowTarget());
+        this.subscriptions$.push(this.inputEvent());
     }
 }
 

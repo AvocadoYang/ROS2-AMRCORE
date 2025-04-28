@@ -21,6 +21,7 @@ class SocketConnect {
         this.MC = new MissionControl(this.socket, node);
 
         this.TC = new TrafficControl(this.socket, node);
+
         this.socket.on("connect", () => {
         })
 
