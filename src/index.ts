@@ -27,7 +27,9 @@ async function getNode() {
     rclnodejs.shutdown();
     process.exit(0);
   });
-  rclnodejs.spin(node);
+
+  node.spin()
 })().catch((): void => {
   process.exitCode = 1
 })
+

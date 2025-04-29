@@ -35,6 +35,7 @@ export function sendIsLeaveLocation(isAwayMsg: { locationId: string }, socket: S
 
 
 export function sendShortestIsReceived(result: boolean, socket: Socket) {
+    console.log(result, '????????????????')
     socket.volatile.emit('receive-shortestPath', { result });
 }
 

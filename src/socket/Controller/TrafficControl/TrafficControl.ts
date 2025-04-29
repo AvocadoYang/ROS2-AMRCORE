@@ -52,6 +52,7 @@ class TrafficControl {
             this.targetLoc = shortestPath[shortestPath.length - 1];
             return;
         })).subscribe(({ shortestPath }) => {
+
             this.trafficService.sendShortestPath(shortestPath);
         })
     }

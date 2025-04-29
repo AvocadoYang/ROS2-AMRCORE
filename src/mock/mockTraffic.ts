@@ -38,25 +38,30 @@ const io = new SocketIOServer(server, {
 
 export const register = () => {
     io.of('/amr').on('connection', async (socket) => {
-        socket.emit('start-initial', { amrId: "anfa-ps14-001", start: true });
+        // socket.emit('start-initial', { amrId: "anfa-ps14-001", start: true });
 
-        socket.emit('shortest-path', { shortestPath: ['1'] });
+        let shortestResult = false;
+        while (!shortestResult) {
+            socket.emit('shortest-path', { shortestPath: ['1'] });
 
-        const reciveShortestPath = await firstValueFrom<{ result: boolean }>(
-            fromEventPattern(
-                (next) => socket.on('receive-shortestPath', next)
+            const reciveShortestPath = await firstValueFrom<{ result: boolean }>(
+                fromEventPattern(
+                    (next) => socket.on('receive-shortestPath', next)
+                )
             )
-        )
 
-        if (!reciveShortestPath.result) return;
+            console.log(reciveShortestPath, '!!!!!!!!!!!!!!!')
+            if (reciveShortestPath.result) shortestResult = true
+        }
 
-        const response = await firstValueFrom<{ loctionId: string }>(
-            fromEventPattern(
-                (next) => socket.on('reach-goal', next)
-            )
-        )
 
-        if (!response) return;
+        // const response = await firstValueFrom<{ loctionId: string }>(
+        //     fromEventPattern(
+        //         (next) => socket.on('reach-goal', next)
+        //     )
+        // )
+
+        // if (!response) return;
 
         moveFlow(socket);
 
@@ -69,6 +74,7 @@ const moveFlow = async (socket: Socket) => {
 
     let shortestPath: string[] = [];
 
+    console.log('?????????????')
     socket.emit('shortest-path', { shortestPath: ['1, 2, 3, 4, 5'] });
 
     const reciveShortestPath = await firstValueFrom<{ result: boolean }>(
@@ -76,8 +82,10 @@ const moveFlow = async (socket: Socket) => {
             (next) => socket.on('receive-shortestPath', next)
         )
     )
+    if (!reciveShortestPath.result) return
 
-    if (!reciveShortestPath.result) return;
+
+
 
     shortestPath = ['1, 2, 3, 4, 5'];
 

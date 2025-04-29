@@ -55,11 +55,11 @@ class TrafficBehavior {
     }
 
     public sendShortestPath(shortestPath: string[]) {
+        console.log('=========', shortestPath, '===========')
         this._shortestPathServiceClient.sendRequest({ shortest_path: shortestPath }, (res) => {
+            console.log(res, 'response @@@@@@!!!!')
+            sendShortestIsReceived(res.result, this.socket)
 
-            if (res.result) {
-                sendShortestIsReceived(res.result, this.socket)
-            }
         })
     }
 
